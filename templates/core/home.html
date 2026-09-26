@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- ============ Ticker tape ============ -->
+<div class="ticker-tape" aria-hidden="true">
+  <div class="track">
+    {% for i in "12" %}
+      <span><b class="text-white">ROE</b> quality check</span><span><b class="text-white">ROIC</b> capital efficiency</span>
+      <span><b class="text-white">P/E · P/B · PEG</b> valuation</span><span><b class="text-white">SMA 20/50</b> trend</span>
+      <span><b class="text-white">MACD</b> momentum</span><span><b class="text-white">RSI</b> overbought / oversold</span>
+      <span><b class="text-white">Bollinger</b> volatility</span><span><b class="text-white">BIAS</b> stretch</span>
+      <span><b class="text-white">Order flow</b> buy vs sell</span><span><b class="text-white">Volume footprint</b> POC</span>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ============ Hero with background video ============ -->
+<section class="hero">
+  <!-- Put your own video at static/videos/hero.mp4 — if it's missing, the chart image shows instead -->
+  <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="{% static 'images/hero-poster.svg' %}">
+    <source src="{% static 'videos/hero.mp4' %}" type="video/mp4">
+  </video>
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-7">
+        <span class="hero-badge mb-4"><i class="bi bi-stars text-warning"></i> Built for retail &amp; small-scale investors</span>
+        <h1 class="mb-4">Understand a stock <span class="text-gradient">before</span> you invest in it.</h1>
+        <p class="lead text-muted-sw mb-4">
+          StockWise combines <b class="text-white">fundamental analysis</b> (ROE, ROIC, margins, P/E, P/B, PEG) with
+          <b class="text-white">technical analysis</b> (moving averages, MACD, RSI, Bollinger Bands, BIAS, order flow, volume footprint)
+          and shows a clear <b class="text-white">next-week outlook</b> with simple charts.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-sw btn-lg"><i class="bi bi-speedometer2"></i> Open Dashboard</a>
+          {% else %}
+            <a href="{% url 'register' %}" class="btn btn-sw btn-lg">Start free <i class="bi bi-arrow-right"></i></a>
+            <a href="{% url 'login' %}" class="btn btn-outline-sw btn-lg">I have an account</a>
+          {% endif %}
+        </div>
+        <p class="small text-muted-sw mt-4 mb-0"><i class="bi bi-info-circle"></i> Educational tool. Take your own decisions — don't rely on market tips.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Stats ============ -->
+<section class="py-5 border-bottom" style="border-color: var(--sw-border) !important;">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-6 col-md-3"><div class="stat-number text-gradient"><span data-count="6">0</span></div><div class="text-muted-sw small">Fundamental ratios</div></div>
+      <div class="col-6 col-md-3"><div class="stat-number text-gradient"><span data-count="7">0</span></div><div class="text-muted-sw small">Technical signals</div></div>
+      <div class="col-6 col-md-3"><div class="stat-number text-gradient"><span data-count="5">0</span></div><div class="text-muted-sw small">Day forecast</div></div>
+      <div class="col-6 col-md-3"><div class="stat-number text-gradient"><span data-count="100" data-suffix="%">0</span></div><div class="text-muted-sw small">Free &amp; transparent</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ About ============ -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 reveal">
+        <!-- Replace with a photo: save it as static/images/about.jpg -->
+        <img class="img-frame" src="{% static 'images/about.jpg' %}"
+             onerror="this.onerror=null;this.src='{% static 'images/about.svg' %}';" alt="Stock chart with an upward forecast">
+      </div>
+      <div class="col-lg-6 reveal">
+        <div class="eyebrow mb-2">About StockWise</div>
+        <h2 class="fw-bold mb-3">Research made simple for everyday investors</h2>
+        <p class="text-muted-sw">
+          Most beginners buy stocks because of tips from friends, social media or TV. StockWise helps you look at
+          the <b class="text-white">facts</b> instead: how profitable the company is, whether the price is expensive,
+          and what the chart is saying right now.
+        </p>
+        <ul class="list-unstyled mt-4">
+          <li class="mb-3 d-flex gap-3"><i class="bi bi-check-circle-fill text-accent fs-5"></i><span><b>Plain-English explanations</b> for every number.</span></li>
+          <li class="mb-3 d-flex gap-3"><i class="bi bi-check-circle-fill text-accent fs-5"></i><span><b>Small charts for every stock</b> in your watchlist with a next-week range.</span></li>
+          <li class="mb-3 d-flex gap-3"><i class="bi bi-check-circle-fill text-accent fs-5"></i><span><b>Honest accuracy:</b> we show how often the signal was right in the past.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Features preview ============ -->
+<section id="features" class="section section-alt">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <div class="eyebrow mb-2">Features</div>
+      <h2 class="fw-bold">Everything you need to analyse a stock</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 reveal"><div class="sw-card"><div class="icon-circle"><i class="bi bi-building-check"></i></div><h5>Fundamentals</h5><p class="small text-muted-sw mb-0">ROE, ROIC, Net Profit Margin, P/E, P/B and PEG rated Good / Okay / Weak.</p></div></div>
+      <div class="col-md-6 col-lg-3 reveal"><div class="sw-card"><div class="icon-circle blue"><i class="bi bi-graph-up"></i></div><h5>Technicals</h5><p class="small text-muted-sw mb-0">Moving averages, MACD, RSI, Bollinger Bands and BIAS with bullish / bearish signals.</p></div></div>
+      <div class="col-md-6 col-lg-3 reveal"><div class="sw-card"><div class="icon-circle gold"><i class="bi bi-bar-chart-steps"></i></div><h5>Volume insight</h5><p class="small text-muted-sw mb-0">Order-flow pressure and a volume footprint (Point of Control) to see where buyers defend.</p></div></div>
+      <div class="col-md-6 col-lg-3 reveal"><div class="sw-card"><div class="icon-circle"><i class="bi bi-calendar-week"></i></div><h5>Next-week outlook</h5><p class="small text-muted-sw mb-0">Likely Up / Down / Sideways with an expected price range for the next 5 trading days.</p></div></div>
+    </div>
+    <div class="text-center mt-5"><a href="{% url 'features' %}" class="btn btn-outline-sw">See all features <i class="bi bi-arrow-right"></i></a></div>
+  </div>
+</section>
+
+<!-- ============ How it works ============ -->
+<section class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal">
+        <div class="eyebrow mb-2">How it works</div>
+        <h2 class="fw-bold mb-4">Three steps to a clearer decision</h2>
+        <div class="d-flex gap-3 mb-4"><div class="step-number">1</div><div><h5 class="mb-1">Search a stock</h5><p class="text-muted-sw small mb-0">Type a name like TCS or RELIANCE and pick NSE, BSE or US.</p></div></div>
+        <div class="d-flex gap-3 mb-4"><div class="step-number">2</div><div><h5 class="mb-1">Read the signals</h5><p class="text-muted-sw small mb-0">See each ratio and indicator explained with a simple Good / Weak or Bullish / Bearish tag.</p></div></div>
+        <div class="d-flex gap-3"><div class="step-number">3</div><div><h5 class="mb-1">Decide yourself</h5><p class="text-muted-sw small mb-0">Use the outlook as one input — combine it with your own research and risk limits.</p></div></div>
+      </div>
+      <div class="col-lg-7 reveal">
+        <img class="img-frame" src="{% static 'images/dashboard.jpg' %}"
+             onerror="this.onerror=null;this.src='{% static 'images/dashboard-preview.svg' %}';" alt="Dashboard preview with stock cards">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Help + Contact CTA ============ -->
+<section id="help" class="section section-alt">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-6 reveal">
+        <div class="sw-card">
+          <div class="icon-circle blue"><i class="bi bi-life-preserver"></i></div>
+          <h4>New to investing?</h4>
+          <p class="text-muted-sw">Our Help centre explains every ratio and indicator in simple words, with a glossary and FAQs.</p>
+          <a href="{% url 'help' %}" class="btn btn-outline-sw">Visit Help centre</a>
+        </div>
+      </div>
+      <div id="contact" class="col-lg-6 reveal">
+        <div class="sw-card">
+          <div class="icon-circle gold"><i class="bi bi-people"></i></div>
+          <h4>Join the community</h4>
+          <p class="text-muted-sw">Ask questions, share what you've learned and contact our team.</p>
+          <a href="{% url 'contact' %}" class="btn btn-outline-sw">Contacts &amp; Community</a>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5 reveal">{% include "partials/disclaimer.html" %}</div>
+  </div>
+</section>
+{% endblock %}

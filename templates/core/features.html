@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Features{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">Features</div>
+    <h1 class="fw-bold">What StockWise analyses for you</h1>
+    <p class="text-muted-sw mb-0">Two kinds of analysis, one simple forecast.</p>
+  </div>
+</section>
+
+<!-- Fundamental -->
+<section class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal">
+        <div class="eyebrow mb-2">1 · Fundamental analysis</div>
+        <h2 class="fw-bold">Is it a good business at a fair price?</h2>
+        <p class="text-muted-sw">Company ratios are downloaded automatically and rated so you instantly see strengths and weaknesses.</p>
+      </div>
+      <div class="col-lg-7">
+        <div class="row g-3">
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-percent text-accent"></i> ROE</h5><p class="small text-muted-sw mb-0">Return on Equity — profit earned on shareholders' money.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-diagram-3 text-accent"></i> ROIC</h5><p class="small text-muted-sw mb-0">Return on Invested Capital — profit earned on debt + equity.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-cash-coin text-accent"></i> Net Profit Margin</h5><p class="small text-muted-sw mb-0">How much profit is kept from every ₹100 of sales.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-tag text-accent"></i> P/E Ratio</h5><p class="small text-muted-sw mb-0">Price you pay for ₹1 of yearly earnings.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-journal-bookmark text-accent"></i> P/B Ratio</h5><p class="small text-muted-sw mb-0">Price compared to the company's net assets.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-speedometer text-accent"></i> PEG Ratio</h5><p class="small text-muted-sw mb-0">P/E adjusted for how fast earnings grow.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Technical -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="row align-items-center g-5 flex-lg-row-reverse">
+      <div class="col-lg-5 reveal">
+        <div class="eyebrow mb-2">2 · Technical analysis</div>
+        <h2 class="fw-bold">What are price and volume saying?</h2>
+        <p class="text-muted-sw">Seven signals are scored from −1 (bearish) to +1 (bullish) and combined with fixed weights you can see on every stock page.</p>
+        <img class="img-frame mt-3" src="{% static 'images/features.jpg' %}"
+             onerror="this.onerror=null;this.src='{% static 'images/about.svg' %}';" alt="Technical chart illustration">
+      </div>
+      <div class="col-lg-7">
+        <div class="row g-3">
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-graph-up-arrow text-info"></i> Moving Averages</h5><p class="small text-muted-sw mb-0">SMA 20 and SMA 50 show the trend direction.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-activity text-info"></i> MACD</h5><p class="small text-muted-sw mb-0">Momentum: is the trend speeding up or slowing down?</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-thermometer-half text-info"></i> RSI</h5><p class="small text-muted-sw mb-0">Overbought above 70, oversold below 30.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-distribute-vertical text-info"></i> Bollinger Bands</h5><p class="small text-muted-sw mb-0">Volatility bands around the 20-day average.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-rulers text-info"></i> BIAS</h5><p class="small text-muted-sw mb-0">How far (%) price has stretched from its average.</p></div></div>
+          <div class="col-sm-6 reveal"><div class="sw-card"><h5><i class="bi bi-arrow-left-right text-info"></i> Order-flow pressure</h5><p class="small text-muted-sw mb-0">Estimated buying vs selling volume (order-book proxy).</p></div></div>
+          <div class="col-sm-12 reveal"><div class="sw-card"><h5><i class="bi bi-bar-chart-steps text-info"></i> Volume Footprint</h5><p class="small text-muted-sw mb-0">Volume-at-price profile with the Point of Control (POC) and 70% value area for the last 60 days.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Forecast -->
+<section class="section">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6 reveal">
+        <div class="eyebrow mb-2">3 · Next-week outlook</div>
+        <h2 class="fw-bold">A simple, transparent forecast</h2>
+        <p class="text-muted-sw">We combine <b class="text-white">75% technical score</b> and <b class="text-white">25% fundamental score</b>, then use the stock's normal weekly volatility to draw an expected price range for the next 5 trading days.</p>
+        <p class="text-muted-sw">Every stock page also shows a <b class="text-white">back-test hit rate</b>: how often the technical signal's direction matched the real move over the past year. Around 50% means the signal is no better than a coin flip for that stock — that honesty helps you decide how much weight to give it.</p>
+        <p class="text-muted-sw"><i class="bi bi-cpu text-accent"></i> <b class="text-white">AI news sentiment:</b> headlines are read by <b class="text-white">FinBERT</b>, a deep learning (BERT) model trained on financial text, and tagged Positive / Neutral / Negative. The average gives each stock and sector a "news mood".</p>
+      </div>
+      <div class="col-lg-6 reveal">
+        <img class="img-frame" src="{% static 'images/dashboard.jpg' %}"
+             onerror="this.onerror=null;this.src='{% static 'images/dashboard-preview.svg' %}';" alt="Dashboard with forecasts">
+      </div>
+    </div>
+    <div class="mt-5">{% include "partials/disclaimer.html" %}</div>
+    <div class="text-center mt-4">
+      <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'register' %}{% endif %}" class="btn btn-sw btn-lg">Try it now</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

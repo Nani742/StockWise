@@ -1,0 +1,5 @@
+# Extra packages for the AI / deep learning features (FinBERT news sentiment).
+# Install AFTER requirements.txt:   pip install -r requirements-ml.txt
+# Download size: ~200-300 MB for PyTorch (CPU version is fine, no graphics card needed).
+torch>=2.2
+transformers>=4.44

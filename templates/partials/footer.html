@@ -1,0 +1,41 @@
+{% load static %}
+<footer class="sw-footer mt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="d-flex align-items-center mb-2">
+          <img src="{% static 'images/logo.svg' %}" width="30" height="30" alt="" class="me-2">
+          <span class="fw-bold text-white fs-5">StockWise</span>
+        </div>
+        <p class="small">Simple stock analysis for retail and small-scale investors: fundamentals, technicals and a next-week outlook in one place.</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="text-white">Explore</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{% url 'home' %}#about">About</a></li>
+          <li><a href="{% url 'features' %}">Features</a></li>
+          <li><a href="{% url 'help' %}">Help</a></li>
+          <li><a href="{% url 'contact' %}">Contacts &amp; Community</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="text-white">Account</h6>
+        <ul class="list-unstyled small">
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+          {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <div class="disclaimer small">
+          <strong>Disclaimer:</strong> Educational tool only — not investment advice. Take your own decisions and don't rely on market tips.
+        </div>
+      </div>
+    </div>
+    <hr class="border-secondary mt-4">
+    <p class="small text-center mb-0">&copy; {% now "Y" %} StockWise · Market data from Yahoo Finance (may be delayed)</p>
+  </div>
+</footer>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500">
+<rect width="560" height="500" rx="24" fill="#0b1220" stroke="#1f3350"/>
+<rect x="40" y="40" width="340" height="44" rx="12" fill="#132036" stroke="#1f3350"/><rect x="395" y="40" width="125" height="44" rx="12" fill="#16a34a"/>
+<text x="457" y="68" text-anchor="middle" font-family="Arial" font-size="16" fill="#fff" font-weight="bold">Analyse</text><rect x="40" y="120" width="230" height="160" rx="16" fill="#132036" stroke="#1f3350"/>
+<rect x="60" y="140" width="80" height="12" rx="6" fill="#2b4466"/><rect x="190" y="138" width="60" height="18" rx="9" fill="#22c55e" opacity=".25"/>
+<polyline points="60,250 69,238 78,245 87,243 96,232 105,230 114,230 123,229 132,222 141,227 150,222 159,217 168,200 177,202 186,207 195,201 204,204 213,201 222,199 231,190 240,194 249,194 258,211 267,217" fill="none" stroke="#22c55e" stroke-width="3"/><rect x="290" y="120" width="230" height="160" rx="16" fill="#132036" stroke="#1f3350"/>
+<rect x="310" y="140" width="80" height="12" rx="6" fill="#2b4466"/><rect x="440" y="138" width="60" height="18" rx="9" fill="#ef4444" opacity=".25"/>
+<polyline points="310,208 319,217 328,226 337,242 346,236 355,235 364,250 373,243 382,242 391,234 400,243 409,224 418,220 427,223 436,230 445,234 454,225 463,229 472,218 481,213 490,198 499,190 508,192 517,215" fill="none" stroke="#ef4444" stroke-width="3"/><rect x="40" y="300" width="230" height="160" rx="16" fill="#132036" stroke="#1f3350"/>
+<rect x="60" y="320" width="80" height="12" rx="6" fill="#2b4466"/><rect x="190" y="318" width="60" height="18" rx="9" fill="#22c55e" opacity=".25"/>
+<polyline points="60,430 69,425 78,423 87,420 96,422 105,423 114,428 123,420 132,418 141,421 150,428 159,428 168,419 177,416 186,420 195,411 204,402 213,396 222,391 231,384 240,380 249,375 258,379 267,370" fill="none" stroke="#22c55e" stroke-width="3"/><rect x="290" y="300" width="230" height="160" rx="16" fill="#132036" stroke="#1f3350"/>
+<rect x="310" y="320" width="80" height="12" rx="6" fill="#2b4466"/><rect x="440" y="318" width="60" height="18" rx="9" fill="#22c55e" opacity=".25"/>
+<polyline points="310,427 319,403 328,430 337,422 346,411 355,417 364,412 373,404 382,398 391,406 400,409 409,398 418,383 427,383 436,383 445,382 454,370 463,385 472,403 481,402 490,418 499,426 508,426 517,422" fill="none" stroke="#22c55e" stroke-width="3"/></svg>

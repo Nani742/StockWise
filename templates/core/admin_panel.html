@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+      <div class="eyebrow">Admin</div>
+      <h1 class="fw-bold mb-0">Admin Panel</h1>
+    </div>
+    <a href="{% url 'admin:index' %}" class="btn btn-outline-sw"><i class="bi bi-database-gear"></i> Open full Django admin</a>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg"><div class="admin-stat"><div class="small text-muted-sw">Users</div><div class="fs-2 fw-bold">{{ user_count|intcomma }}</div></div></div>
+      <div class="col-6 col-lg"><div class="admin-stat"><div class="small text-muted-sw">Watchlist items</div><div class="fs-2 fw-bold">{{ watch_count|intcomma }}</div></div></div>
+      <div class="col-6 col-lg"><div class="admin-stat"><div class="small text-muted-sw">Messages</div><div class="fs-2 fw-bold">{{ message_count|intcomma }}</div></div></div>
+      <div class="col-6 col-lg"><div class="admin-stat"><div class="small text-muted-sw">Open messages</div><div class="fs-2 fw-bold text-warning">{{ open_count|intcomma }}</div></div></div>
+      <div class="col-6 col-lg"><div class="admin-stat"><div class="small text-muted-sw">Community posts</div><div class="fs-2 fw-bold">{{ post_count|intcomma }}</div></div></div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="sw-card">
+          <h5 class="mb-3">Latest contact messages</h5>
+          <div class="table-responsive">
+            <table class="table table-sw align-middle small">
+              <thead><tr><th>From</th><th>Subject</th><th>Received</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                {% for m in messages_list %}
+                  <tr>
+                    <td>{{ m.name }}<div class="text-muted-sw">{{ m.email }}</div></td>
+                    <td>{{ m.subject }}<div class="text-muted-sw">{{ m.message|truncatechars:80 }}</div></td>
+                    <td>{{ m.created_at|naturaltime }}</td>
+                    <td>{% if m.is_resolved %}<span class="badge-signal sig-Bullish">Resolved</span>{% else %}<span class="badge-signal sig-Neutral">Open</span>{% endif %}</td>
+                    <td>
+                      <form method="post" action="{% url 'resolve_message' m.pk %}">{% csrf_token %}
+                        <button class="btn btn-sm btn-outline-sw">{% if m.is_resolved %}Reopen{% else %}Mark resolved{% endif %}</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="5" class="text-muted-sw">No messages yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sw-card mt-4">
+          <h5 class="mb-3">Recent community posts</h5>
+          {% for p in recent_posts %}
+            <div class="d-flex justify-content-between align-items-start border-bottom py-2" style="border-color: var(--sw-border) !important;">
+              <div><b>{{ p.title }}</b> <span class="small text-muted-sw">by {{ p.author.username }} · {{ p.created_at|naturaltime }}</span>
+                <div class="small">{{ p.body|truncatechars:120 }}</div></div>
+              <form method="post" action="{% url 'delete_post' p.pk %}" onsubmit="return confirm('Delete this post?');">{% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+              </form>
+            </div>
+          {% empty %}
+            <p class="small text-muted-sw mb-0">No posts yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="sw-card mb-4">
+          <h5 class="mb-3">Most watched stocks</h5>
+          {% for s in top_symbols %}
+            <div class="d-flex justify-content-between small py-1">
+              <a href="{% url 'stock_detail' s.symbol %}">{{ s.symbol }}</a><span>{{ s.n }} user{{ s.n|pluralize }}</span>
+            </div>
+          {% empty %}
+            <p class="small text-muted-sw mb-0">Nobody has added stocks yet.</p>
+          {% endfor %}
+        </div>
+        <div class="sw-card">
+          <h5 class="mb-3">Newest users</h5>
+          {% for u in recent_users %}
+            <div class="d-flex justify-content-between small py-1">
+              <span>{{ u.username }}{% if u.is_staff %} <span class="badge bg-secondary">staff</span>{% endif %}</span>
+              <span class="text-muted-sw">{{ u.date_joined|naturaltime }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

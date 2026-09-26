@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container auth-wrap py-5">
+  <div class="row justify-content-center w-100 mx-0">
+    <div class="col-lg-10">
+      <div class="auth-card row g-0">
+        <div class="col-md-5 auth-side d-none d-md-flex flex-column justify-content-center p-5">
+          <img src="{% static 'images/auth.svg' %}" alt="" class="img-fluid mb-4" style="max-width:200px;margin:0 auto">
+          <h4 class="fw-bold text-center">Join StockWise</h4>
+          <ul class="list-unstyled small mt-3">
+            <li class="mb-2"><i class="bi bi-check2 text-accent"></i> Fundamental + technical analysis</li>
+            <li class="mb-2"><i class="bi bi-check2 text-accent"></i> Next-week price range</li>
+            <li class="mb-2"><i class="bi bi-check2 text-accent"></i> Personal watchlist with mini charts</li>
+            <li><i class="bi bi-check2 text-accent"></i> Free, no card needed</li>
+          </ul>
+        </div>
+        <div class="col-md-7 p-4 p-md-5">
+          <h3 class="fw-bold mb-1">Create your account</h3>
+          <p class="small text-muted-sw mb-4">Already registered? <a href="{% url 'login' %}">Log in</a></p>
+
+          <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger small">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+            {% endif %}
+            {% for field in form %}
+              <div class="mb-3">
+                <label class="form-label small" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text small">{{ field.help_text|safe }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+            {% endfor %}
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="agree" required>
+              <label class="form-check-label small" for="agree">I understand StockWise is educational and I will take my own investment decisions.</label>
+            </div>
+            <button type="submit" class="btn btn-sw w-100 py-2">Create account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

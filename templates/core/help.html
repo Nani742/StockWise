@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Help{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">Help centre</div>
+    <h1 class="fw-bold">How to use StockWise</h1>
+    <p class="text-muted-sw mb-0">A quick start, a glossary of every number you'll see, and answers to common questions.</p>
+  </div>
+</section>
+
+<section class="section pt-5">
+  <div class="container">
+    <!-- Quick start -->
+    <h3 class="fw-bold mb-4">Quick start</h3>
+    <div class="row g-4 mb-5">
+      <div class="col-md-3"><div class="sw-card"><div class="step-number">1</div><h6>Create an account</h6><p class="small text-muted-sw mb-0">Click Register at the top right.</p></div></div>
+      <div class="col-md-3"><div class="sw-card"><div class="step-number">2</div><h6>Search a stock</h6><p class="small text-muted-sw mb-0">On the Dashboard type e.g. <code>TCS</code>, choose <b>NSE</b>, click Analyse.</p></div></div>
+      <div class="col-md-3"><div class="sw-card"><div class="step-number">3</div><h6>Add to watchlist</h6><p class="small text-muted-sw mb-0">Your watchlist shows a small chart and next-week range for each stock.</p></div></div>
+      <div class="col-md-3"><div class="sw-card"><div class="step-number">4</div><h6>Decide yourself</h6><p class="small text-muted-sw mb-0">Read the signals, do your own research, then decide.</p></div></div>
+    </div>
+
+    <!-- Symbols -->
+    <div class="sw-card mb-5">
+      <h5><i class="bi bi-search text-accent"></i> Stock symbols</h5>
+      <p class="small text-muted-sw mb-2">We use Yahoo Finance symbols. Indian stocks need an exchange ending — the Dashboard adds it for you:</p>
+      <ul class="small mb-0">
+        <li><b>NSE:</b> <code>TCS.NS</code>, <code>RELIANCE.NS</code>, <code>HDFCBANK.NS</code></li>
+        <li><b>BSE:</b> <code>TCS.BO</code>, <code>500325.BO</code></li>
+        <li><b>US:</b> <code>AAPL</code>, <code>MSFT</code> · <b>Nifty 50 index:</b> <code>^NSEI</code></li>
+      </ul>
+    </div>
+
+    <!-- Glossary -->
+    <h3 class="fw-bold mb-4">Glossary</h3>
+    <div class="accordion mb-5" id="glossary">
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g1">ROE — Return on Equity</button></h2>
+        <div id="g1" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Net profit ÷ shareholders' equity. 15%+ is generally strong. Very high ROE with lots of debt can be misleading — check ROIC too.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g2">ROIC — Return on Invested Capital</button></h2>
+        <div id="g2" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">After-tax operating profit ÷ (debt + equity − cash). Shows how well the business turns all its money into profit. 12%+ is good.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g3">Net Profit Margin</button></h2>
+        <div id="g3" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Net profit ÷ revenue. A 15% margin means ₹15 profit from every ₹100 of sales. Compare with companies in the same industry.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g4">P/E, P/B and PEG</button></h2>
+        <div id="g4" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small"><b>P/E</b> = price ÷ earnings per share. <b>P/B</b> = price ÷ book value per share. <b>PEG</b> = P/E ÷ earnings growth %. Lower usually means cheaper, but cheap stocks can be cheap for a reason.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g5">Moving Averages (SMA 20 / 50)</button></h2>
+        <div id="g5" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Average closing price of the last 20 / 50 days. Price above both, with SMA20 above SMA50, is a classic uptrend.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g6">MACD</button></h2>
+        <div id="g6" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Difference between the 12-day and 26-day exponential averages, compared with its own 9-day average (signal line). Green growing histogram = rising momentum.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g7">RSI</button></h2>
+        <div id="g7" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Relative Strength Index, 0–100. Above 70 = overbought, below 30 = oversold. Strong trends can stay overbought for a long time.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g8">Bollinger Bands &amp; BIAS</button></h2>
+        <div id="g8" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">Bollinger Bands sit 2 standard deviations above/below the 20-day average. BIAS is the % distance of price from that average. Both show how stretched the price is.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g9">Order book &amp; order-flow pressure</button></h2>
+        <div id="g9" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">A real order book shows every pending buy/sell order and needs a paid live broker feed (e.g. Zerodha Kite Connect, Upstox API). StockWise estimates buy vs sell pressure from daily data: when a day closes near its high, most volume is counted as buying.</div></div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g10">Volume footprint, POC and value area</button></h2>
+        <div id="g10" class="accordion-collapse collapse" data-bs-parent="#glossary"><div class="accordion-body small">We add up how much volume traded at each price level over 60 days. The level with the most volume is the <b>Point of Control (POC)</b>; the zone holding 70% of volume is the <b>value area</b>. True tick-by-tick footprint charts need intraday tick data.</div></div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h3 class="fw-bold mb-4">FAQ</h3>
+    <div class="row g-4 mb-5">
+      <div class="col-md-6"><div class="sw-card"><h6>How accurate is the forecast?</h6><p class="small text-muted-sw mb-0">Nobody can predict markets reliably. Each stock page shows the past hit rate of the signal — often close to 50–60%. Treat it as one input, not an answer.</p></div></div>
+      <div class="col-md-6"><div class="sw-card"><h6>Why does a ratio show N/A?</h6><p class="small text-muted-sw mb-0">Yahoo Finance doesn't publish every ratio for every company (e.g. banks often lack ROIC). N/A ratios are simply left out of the score.</p></div></div>
+      <div class="col-md-6"><div class="sw-card"><h6>What does "DEMO DATA" mean?</h6><p class="small text-muted-sw mb-0">The app is running on generated practice prices (offline mode). Those numbers are not real — never use them for decisions.</p></div></div>
+      <div class="col-md-6"><div class="sw-card"><h6>How fresh is the data?</h6><p class="small text-muted-sw mb-0">Daily prices from Yahoo Finance, which may be delayed. Results are reused for 15 minutes to keep the app fast.</p></div></div>
+      <div class="col-md-6"><div class="sw-card"><h6>What is "News mood"?</h6><p class="small text-muted-sw mb-0">An AI model (FinBERT) reads each headline and labels it Positive, Neutral or Negative. News mood is the average. It's the AI's reading of headlines, can be wrong, and is not a buy/sell signal.</p></div></div>
+      <div class="col-md-6"><div class="sw-card"><h6>Why isn't news mood part of the forecast?</h6><p class="small text-muted-sw mb-0">We only mix signals into the forecast that we can back-test on past data. Old headlines aren't available for free, so news mood is shown separately and saved daily to build that history.</p></div></div>
+    </div>
+
+    {% include "partials/disclaimer.html" %}
+  </div>
+</section>
+{% endblock %}

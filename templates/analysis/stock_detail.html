@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}{{ r.symbol }} analysis{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <a href="{% url 'dashboard' %}" class="small text-muted-sw text-decoration-none"><i class="bi bi-arrow-left"></i> Dashboard</a>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mt-2">
+      <div>
+        <h1 class="fw-bold mb-0">{{ r.symbol }}
+          {% if r.is_demo %}<span class="badge demo-badge fs-6 align-middle">DEMO DATA — not real prices</span>{% endif %}
+        </h1>
+        <div class="text-muted-sw">{{ r.name }} · as of {{ r.as_of }}</div>
+        {% if nifty_info %}
+          <a href="{% url 'nifty50' %}" class="chip mt-2"><i class="bi bi-award text-warning"></i> NIFTY 50 · {{ nifty_info.sector }}</a>
+        {% endif %}
+      </div>
+      <div class="text-end">
+        <div class="fs-2 fw-bold">{{ r.last_price|floatformat:2|intcomma }} <span class="fs-6 text-muted-sw">{{ r.currency }}</span></div>
+        <div class="{% if r.change >= 0 %}up{% else %}down{% endif %}">
+          {% if r.change >= 0 %}+{% endif %}{{ r.change|floatformat:2 }} ({% if r.change_pct >= 0 %}+{% endif %}{{ r.change_pct|floatformat:2 }}%)
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-3 align-items-center">
+      {% if watch_item %}
+        <form method="post" action="{% url 'watchlist_remove' watch_item.pk %}">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn btn-outline-sw btn-sm"><i class="bi bi-star-fill text-warning"></i> In watchlist — remove</button>
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'watchlist_add' %}">{% csrf_token %}
+          <input type="hidden" name="symbol" value="{{ r.symbol }}">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn btn-sw btn-sm"><i class="bi bi-star"></i> Add to watchlist</button>
+        </form>
+      {% endif %}
+      <span class="small text-muted-sw">52-week range: {{ r.low_52w|floatformat:2|intcomma }} – {{ r.high_52w|floatformat:2|intcomma }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <!-- ============ Prediction ============ -->
+    {% with p=r.prediction %}
+    <div class="prediction-card mb-4">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-4">
+          <div class="small text-muted-sw text-uppercase">Next week outlook (5 trading days)</div>
+          <div class="display-6 fw-bold mt-1 {% if p.direction == 'Likely Up' %}up{% elif p.direction == 'Likely Down' %}down{% endif %}">
+            {% if p.direction == 'Likely Up' %}<i class="bi bi-arrow-up-right"></i>{% elif p.direction == 'Likely Down' %}<i class="bi bi-arrow-down-right"></i>{% else %}<i class="bi bi-arrow-left-right"></i>{% endif %}
+            {{ p.direction }}
+          </div>
+          <div class="small text-muted-sw mt-1">Signal strength: <b class="text-white">{{ p.strength }}/100</b></div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <div class="small text-muted-sw">Expected price</div>
+          <div class="fs-4 fw-bold">{{ p.target|floatformat:2|intcomma }}</div>
+          <div class="small {% if p.expected_pct >= 0 %}up{% else %}down{% endif %}">{% if p.expected_pct >= 0 %}+{% endif %}{{ p.expected_pct }}%</div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="small text-muted-sw">Likely range</div>
+          <div class="fs-5 fw-bold">{{ p.low|floatformat:2|intcomma }} – {{ p.high|floatformat:2|intcomma }}</div>
+          <div class="small text-muted-sw">Normal weekly move ±{{ p.weekly_volatility_pct }}%</div>
+        </div>
+        <div class="col-lg-3">
+          <div class="small text-muted-sw">Past accuracy of this signal</div>
+          {% if r.backtest.hit_rate %}
+            <div class="fs-4 fw-bold">{{ r.backtest.hit_rate }}%</div>
+            <div class="small text-muted-sw">over {{ r.backtest.samples }} past signals (50% = coin flip)</div>
+          {% else %}
+            <div class="fs-6">Not enough history</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="d-flex justify-content-between small text-muted-sw mb-1"><span>Bearish</span><span>Combined score {{ p.combined_score }}</span><span>Bullish</span></div>
+        <div class="score-bar"><div class="dot" id="scoreDot" data-score="{{ p.combined_score }}"></div></div>
+        <div class="small text-muted-sw mt-2">Combined = 75% technical ({{ r.tech_score|default_if_none:"n/a" }}) + 25% fundamental ({{ r.fundamentals.score }}).</div>
+        <div class="small mt-2" id="news-mood-line"><i class="bi bi-newspaper"></i> <span class="text-muted-sw">News mood (NLP): analysing latest headlines…</span></div>
+      </div>
+    </div>
+    {% endwith %}
+
+    {% include "partials/disclaimer.html" with extra_class="mb-4" %}
+
+    <!-- ============ Charts ============ -->
+    <div class="chart-box mb-4">
+      <h5 class="mb-3">Price, moving averages, Bollinger Bands &amp; forecast</h5>
+      <div class="chart-h"><canvas id="priceChart"></canvas></div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6"><div class="chart-box"><h6>RSI (14)</h6><div class="chart-s"><canvas id="rsiChart"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-box"><h6>MACD (12, 26, 9)</h6><div class="chart-s"><canvas id="macdChart"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-box"><h6>Volume — estimated buying vs selling</h6><div class="chart-s"><canvas id="volumeChart"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-box"><h6>BIAS — % distance from 20-day average</h6><div class="chart-s"><canvas id="biasChart"></canvas></div></div></div>
+    </div>
+
+    <!-- ============ Technical signals ============ -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="sw-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Technical signals</h5>
+            <span class="badge-signal sig-{{ r.tech_label }}">Overall: {{ r.tech_label }}</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sw align-middle small">
+              <thead><tr><th>Indicator</th><th>Reading</th><th>Signal</th><th>Weight</th></tr></thead>
+              <tbody>
+                {% for s in r.signals %}
+                  <tr>
+                    <td><b>{{ s.name }}</b><div class="text-muted-sw">{{ s.note }}</div></td>
+                    <td>{{ s.value }}</td>
+                    <td><span class="badge-signal sig-{{ s.signal }}">{{ s.signal }}</span>
+                      <div class="text-muted-sw">{% if s.score is not None %}{{ s.score }}{% else %}n/a{% endif %}</div></td>
+                    <td>{{ s.weight }}%</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="chart-box h-100">
+          <h6>Volume footprint (60 days)</h6>
+          <div class="small text-muted-sw mb-2"><span class="text-warning">■</span> POC {{ r.profile.poc|floatformat:2|intcomma }} · <span class="text-info">■</span> value area</div>
+          <div style="position:relative;height:320px"><canvas id="profileChart"></canvas></div>
+          <div class="small mt-2">
+            Order flow (20 days): <span class="up">Buy {{ r.order_flow.buy_pct }}%</span> / <span class="down">Sell {{ r.order_flow.sell_pct }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Fundamentals ============ -->
+    <div class="sw-card mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Fundamental analysis</h5>
+        <span class="badge-signal {% if r.fundamentals.label == 'Strong' %}sig-Bullish{% elif r.fundamentals.label == 'Weak' %}sig-Bearish{% else %}sig-Neutral{% endif %}">
+          {{ r.fundamentals.label }} ({{ r.fundamentals.available }}/6 ratios available)
+        </span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sw align-middle small">
+          <thead><tr><th>Ratio</th><th>Value</th><th>Rating</th><th>What it means</th><th>Rule used</th></tr></thead>
+          <tbody>
+            {% for f in r.fundamentals.items %}
+              <tr>
+                <td><b>{{ f.name }}</b></td>
+                <td class="fs-6">{{ f.display }}</td>
+                <td><span class="badge-signal {% if f.score == 1 %}sig-Bullish{% elif f.score == -1 %}sig-Bearish{% else %}sig-Neutral{% endif %}">{{ f.verdict }}</span></td>
+                <td class="text-muted-sw">{{ f.meaning }}</td>
+                <td class="text-muted-sw">{{ f.rule }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="small text-muted-sw">Ratios differ a lot between industries (banks, IT, FMCG…). Compare a company with its own sector before judging.</div>
+    </div>
+
+    <!-- ============ Company news ============ -->
+    <div class="sw-card mb-4">
+      <h5 class="mb-3"><i class="bi bi-newspaper text-accent"></i> Latest news about {{ nifty_info.name|default:r.name }}</h5>
+      <div id="stock-news" data-url="{% url 'stock_news_api' r.symbol %}?name={{ nifty_info.name|default:r.name|urlencode }}"></div>
+    </div>
+
+    {% include "partials/disclaimer.html" %}
+  </div>
+</section>
+
+{{ r|json_script:"analysis-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const data = JSON.parse(document.getElementById("analysis-data").textContent);
+    renderStockDetail(data);
+    const newsEl = document.getElementById("stock-news");
+    const moodLine = document.getElementById("news-mood-line");
+    document.addEventListener("news-loaded", (e) => {
+      if (e.detail.el !== newsEl) return;
+      const d = e.detail.data, m = d.mood;
+      if (!m) { moodLine.innerHTML = '<i class="bi bi-newspaper"></i> <span class="text-muted-sw">News mood: not available.</span>'; return; }
+      const cls = m.label === "Positive" ? "sig-Bullish" : m.label === "Negative" ? "sig-Bearish" : "sig-Neutral";
+      moodLine.innerHTML = `<i class="bi bi-newspaper"></i> <span class="text-muted-sw">News mood (NLP):</span>
+        <span class="badge-signal ${cls}">${esc(m.label)} ${m.score >= 0 ? "+" : ""}${m.score.toFixed(2)}</span>
+        <span class="text-muted-sw">from ${m.count} headlines · ${esc(d.sentiment_engine)} · shown separately, not part of the back-tested score</span>`;
+    });
+    loadNews(newsEl, newsEl.dataset.url);
+    const dot = document.getElementById("scoreDot");
+    const s = parseFloat(dot.dataset.score) || 0;           // -1 ... +1
+    dot.style.left = ((s + 1) / 2 * 100) + "%";
+  });
+</script>
+{% endblock %}

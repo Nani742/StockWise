@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Contacts &amp; Community{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">Contacts &amp; Community</div>
+    <h1 class="fw-bold">Talk to us and learn together</h1>
+    <p class="text-muted-sw mb-0">Send the team a message, or share questions and learnings with other investors.</p>
+  </div>
+</section>
+
+<section class="section pt-5">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Contact form -->
+      <div class="col-lg-5">
+        <div class="sw-card">
+          <h4 class="mb-3"><i class="bi bi-envelope-paper text-accent"></i> Contact us</h4>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="contact">
+            {{ contact_form.non_field_errors }}
+            {% for field in contact_form %}
+              <div class="mb-3">
+                <label class="form-label small" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-sw w-100">Send message</button>
+          </form>
+          <hr class="border-secondary my-4">
+          <div class="small text-muted-sw">
+            <div class="mb-2"><i class="bi bi-envelope me-2"></i> support@stockwise.example</div>
+            <div class="mb-2"><i class="bi bi-geo-alt me-2"></i> Hyderabad, India</div>
+            <div><i class="bi bi-clock me-2"></i> Mon–Fri, 10:00–18:00 IST</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div class="col-lg-7">
+        <div class="sw-card">
+          <h4 class="mb-3"><i class="bi bi-people text-accent"></i> Community board</h4>
+
+          {% if user.is_authenticated %}
+            <form method="post" class="mb-4" novalidate>
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="post">
+              {% for field in post_form %}
+                <div class="mb-2">
+                  {{ field }}
+                  {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-outline-sw btn-sm"><i class="bi bi-send"></i> Post</button>
+            </form>
+          {% else %}
+            <p class="small text-muted-sw"><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to post in the community.</p>
+          {% endif %}
+
+          {% for post in posts %}
+            <div class="border-top pt-3 mt-3" style="border-color: var(--sw-border) !important;">
+              <div class="d-flex justify-content-between">
+                <h6 class="mb-1">{{ post.title }}</h6>
+                <span class="small text-muted-sw">{{ post.created_at|timesince }} ago</span>
+              </div>
+              <p class="small mb-1">{{ post.body|linebreaksbr }}</p>
+              <div class="small text-muted-sw"><i class="bi bi-person-circle"></i> {{ post.author.first_name|default:post.author.username }}</div>
+            </div>
+          {% empty %}
+            <p class="small text-muted-sw mb-0">No posts yet — be the first to start a discussion!</p>
+          {% endfor %}
+
+          <div class="small text-muted-sw mt-4">
+            Community rule: no buy/sell "tips". Share learnings and reasoning, not calls.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">{% include "partials/disclaimer.html" %}</div>
+  </div>
+</section>
+{% endblock %}

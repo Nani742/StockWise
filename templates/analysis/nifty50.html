@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}NIFTY 50{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <div class="eyebrow">Market overview</div>
+        <h1 class="fw-bold mb-1">NIFTY 50 companies</h1>
+        <p class="text-muted-sw mb-0">All 50 companies in India's benchmark index, each with a mini chart and next-week outlook.</p>
+      </div>
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        {% if DEMO_MODE %}<span class="badge demo-badge p-2">DEMO DATA MODE</span>{% endif %}
+        <form method="post" action="{% url 'watchlist_add_nifty50' %}">
+          {% csrf_token %}
+          <button class="btn btn-sw" {% if watched_count == 50 %}disabled{% endif %}>
+            <i class="bi bi-star"></i> Add all 50 to my watchlist
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Outlook summary (fills in as cards load) -->
+    <div class="row g-3 mt-3">
+      <div class="col-6 col-md-3"><div class="admin-stat"><div class="small text-muted-sw">Loaded</div><div class="fs-4 fw-bold"><span id="cnt-loaded">0</span>/50</div></div></div>
+      <div class="col-6 col-md-3"><div class="admin-stat"><div class="small text-muted-sw">Likely Up</div><div class="fs-4 fw-bold up" id="cnt-up">0</div></div></div>
+      <div class="col-6 col-md-3"><div class="admin-stat"><div class="small text-muted-sw">Sideways</div><div class="fs-4 fw-bold" id="cnt-side">0</div></div></div>
+      <div class="col-6 col-md-3"><div class="admin-stat"><div class="small text-muted-sw">Likely Down</div><div class="fs-4 fw-bold down" id="cnt-down">0</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <!-- Index card -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="stock-card" data-stock-card data-api="{% url 'stock_api' index.symbol %}" data-name="{{ index.name }}">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <a class="fw-bold fs-5 text-white text-decoration-none" href="{% url 'stock_detail' index.symbol %}">NIFTY 50 Index</a>
+            <a class="btn btn-sm btn-outline-sw" href="{% url 'stock_detail' index.symbol %}"><i class="bi bi-bar-chart-line"></i> Analyse</a>
+          </div>
+          <div class="card-body-js"><div class="skeleton mb-2" style="height:48px"></div><div class="skeleton" style="height:120px"></div></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="sw-card">
+          <h5><i class="bi bi-info-circle text-accent"></i> How to use this page</h5>
+          <ul class="small text-muted-sw mb-0">
+            <li>Filter by <b class="text-white">sector</b> or search by name to compare similar companies.</li>
+            <li>Charts load as you scroll (3 at a time) so the free data source isn't overloaded.</li>
+            <li>Click a company's name for the full fundamental + technical analysis.</li>
+            <li>List follows NSE's rejig effective 30 Sep 2026 (BSE Ltd in, Wipro out).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+      <input type="search" id="nifty-search" class="form-control" style="max-width:260px" placeholder="Search company or symbol…">
+      <button type="button" class="chip sector-btn active-chip" data-sector="all">All (50)</button>
+      {% for name, count in sectors %}
+        <button type="button" class="chip sector-btn" data-sector="{{ name }}">{{ name }} ({{ count }})</button>
+      {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mb-4 small align-items-center">
+      <span class="text-muted-sw">Show outlook:</span>
+      <button type="button" class="chip dir-btn active-chip" data-dir="all">All</button>
+      <button type="button" class="chip dir-btn" data-dir="Likely Up">Likely Up</button>
+      <button type="button" class="chip dir-btn" data-dir="Sideways">Sideways</button>
+      <button type="button" class="chip dir-btn" data-dir="Likely Down">Likely Down</button>
+    </div>
+
+    <!-- 50 company cards -->
+    <div class="row g-4" id="nifty-grid">
+      {% for c in companies %}
+        <div class="col-md-6 col-xl-4 nifty-col" data-sector="{{ c.sector }}" data-search="{{ c.name|lower }} {{ c.symbol|lower }}">
+          <div class="stock-card" data-stock-card data-api="{% url 'stock_api' c.symbol %}" data-name="{{ c.name }}">
+            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+              <div>
+                <a class="fw-bold fs-5 text-white text-decoration-none" href="{% url 'stock_detail' c.symbol %}">{{ c.symbol }}</a>
+                <div class="small text-muted-sw">{{ c.sector }}</div>
+              </div>
+              <div class="d-flex gap-1">
+                <a class="btn btn-sm btn-outline-sw" href="{% url 'stock_detail' c.symbol %}" title="Full analysis"><i class="bi bi-bar-chart-line"></i></a>
+                {% if c.watched %}
+                  <span class="btn btn-sm btn-outline-sw disabled" title="In your watchlist"><i class="bi bi-star-fill text-warning"></i></span>
+                {% else %}
+                  <form method="post" action="{% url 'watchlist_add' %}">{% csrf_token %}
+                    <input type="hidden" name="symbol" value="{{ c.symbol }}">
+                    <input type="hidden" name="next" value="{% url 'nifty50' %}">
+                    <button class="btn btn-sm btn-outline-sw" title="Add to watchlist"><i class="bi bi-star"></i></button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+            <div class="card-body-js">
+              <div class="skeleton mb-2" style="height:48px"></div>
+              <div class="skeleton mb-2" style="height:120px"></div>
+              <div class="skeleton" style="height:20px"></div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <p id="nifty-empty" class="text-muted-sw d-none mt-3">No companies match your filter.</p>
+
+    <div class="mt-5">{% include "partials/disclaimer.html" %}</div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  initDashboardCards();
+
+  // ----- outlook counters -----
+  const counts = { loaded: 0, "Likely Up": 0, "Sideways": 0, "Likely Down": 0 };
+  document.addEventListener("card-loaded", (e) => {
+    if (!e.detail.card.closest(".nifty-col")) return;          // skip the index card
+    counts.loaded++; counts[e.detail.data.prediction.direction]++;
+    document.getElementById("cnt-loaded").textContent = counts.loaded;
+    document.getElementById("cnt-up").textContent = counts["Likely Up"];
+    document.getElementById("cnt-side").textContent = counts["Sideways"];
+    document.getElementById("cnt-down").textContent = counts["Likely Down"];
+    applyFilters();
+  });
+
+  // ----- filters: sector + search + outlook -----
+  let sector = "all", dir = "all";
+  const search = document.getElementById("nifty-search");
+  function applyFilters() {
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    document.querySelectorAll(".nifty-col").forEach((col) => {
+      const card = col.querySelector("[data-stock-card]");
+      const okSector = sector === "all" || col.dataset.sector === sector;
+      const okSearch = !q || col.dataset.search.includes(q);
+      // cards not loaded yet stay visible under an outlook filter, so they can load
+      const okDir = dir === "all" || !card.dataset.direction || card.dataset.direction === dir;
+      const show = okSector && okSearch && okDir;
+      col.classList.toggle("d-none", !show);
+      if (show) shown++;
+    });
+    document.getElementById("nifty-empty").classList.toggle("d-none", shown > 0);
+  }
+  function activate(buttons, btn) {
+    buttons.forEach((b) => b.classList.remove("active-chip"));
+    btn.classList.add("active-chip");
+  }
+  const sectorBtns = document.querySelectorAll(".sector-btn");
+  sectorBtns.forEach((b) => b.addEventListener("click", () => { sector = b.dataset.sector; activate(sectorBtns, b); applyFilters(); }));
+  const dirBtns = document.querySelectorAll(".dir-btn");
+  dirBtns.forEach((b) => b.addEventListener("click", () => { dir = b.dataset.dir; activate(dirBtns, b); applyFilters(); }));
+  search.addEventListener("input", applyFilters);
+});
+</script>
+{% endblock %}

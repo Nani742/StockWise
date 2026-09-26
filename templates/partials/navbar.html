@@ -1,0 +1,45 @@
+{% load static %}
+{% with url_name=request.resolver_match.url_name %}
+<nav class="navbar navbar-expand-lg sticky-top sw-navbar">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.svg' %}" width="34" height="34" alt="" class="me-2">
+      Stock<span class="text-accent">Wise</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link {% if url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#about">About</a></li>
+        <li class="nav-item"><a class="nav-link {% if url_name == 'features' %}active{% endif %}" href="{% url 'features' %}">Features</a></li>
+        <li class="nav-item"><a class="nav-link {% if url_name == 'help' %}active{% endif %}" href="{% url 'help' %}">Help</a></li>
+        <li class="nav-item"><a class="nav-link {% if url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contacts</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link {% if url_name == 'dashboard' or url_name == 'stock_detail' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link {% if url_name == 'nifty50' %}active{% endif %}" href="{% url 'nifty50' %}">Nifty 50</a></li>
+        {% endif %}
+      </ul>
+
+      <div class="d-flex align-items-center gap-2">
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <a class="btn btn-sm btn-outline-sw {% if url_name == 'admin_panel' %}border-success{% endif %}" href="{% url 'admin_panel' %}"><i class="bi bi-shield-lock"></i> Admin</a>
+          {% endif %}
+          <span class="small text-muted-sw d-none d-xl-inline">Hi, {{ user.first_name|default:user.username }}</span>
+          <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-sw">Logout</button>
+          </form>
+        {% else %}
+          <a class="btn btn-sm btn-outline-sw" href="{% url 'login' %}">Login</a>
+          <a class="btn btn-sm btn-sw" href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+{% endwith %}
