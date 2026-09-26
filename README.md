@@ -18,7 +18,7 @@ The code is already written, so the order you *set it up* in is:
 4. Open the frontend in your browser and test every page
 5. Then read the code, file by file (section 9), and start changing things
 
-Commands below are for **Windows**. Mac/Linux differences are marked 🍎.
+Commands below are for **Windows**. Mac/Linux differences are marked .
 
 ---
 
@@ -35,7 +35,7 @@ Check Python works — open **Command Prompt** (Start → type `cmd`):
 ```bat
 python --version
 ```
-You should see `Python 3.12.x`. (🍎 use `python3 --version`)
+You should see `Python 3.12.x`. ( use `python3 --version`)
 
 ---
 
@@ -49,7 +49,7 @@ You should see `manage.py` when you type:
 ```bat
 dir
 ```
-(🍎 `ls`)
+( `ls`)
 
 ---
 
@@ -61,7 +61,7 @@ A virtual environment (`venv`) is a private box of Python packages just for this
 python -m venv venv
 venv\Scripts\activate
 ```
-🍎 `python3 -m venv venv` then `source venv/bin/activate`
+ `python3 -m venv venv` then `source venv/bin/activate`
 
 Your terminal line now starts with `(venv)`. **Every time you open a new terminal, run the activate command again.**
 
@@ -101,7 +101,7 @@ In the project folder, copy the example file:
 ```bat
 copy .env.example .env
 ```
-🍎 `cp .env.example .env`
+ `cp .env.example .env`
 
 Open `.env` in VS Code and change these two lines:
 ```
@@ -350,31 +350,14 @@ news mood      = average score of all headlines (> +0.15 Positive, < −0.15 Neg
 - **Why news mood isn't mixed into the forecast:** the forecast only uses signals we can back-test on past data, and free APIs don't provide years of old headlines. The saved SentimentLog history is what Stage 2 can learn from later.
 - Settings (`.env`): `SENTIMENT_ENGINE=auto` (default), `wordlist`, or `off`.
 
----
 
-## 12. Troubleshooting
-
-| Error | Fix |
-|---|---|
-| `'python' is not recognized` | Reinstall Python and tick "Add to PATH", then open a new terminal |
-| `No module named django` | You forgot `venv\Scripts\activate` (look for `(venv)`) |
-| `password authentication failed for user "postgres"` | Wrong `DB_PASSWORD` in `.env` |
-| `database "stockwise_db" does not exist` | Do step 4 again |
-| `connection refused … port 5432` | PostgreSQL isn't running: Start → Services → `postgresql-x64-16` → Start |
-| `relation "…" does not exist` | Run `python manage.py migrate` |
-| Stock page: "No price data found" | Check the symbol (TCS.NS not TCS), check internet, or set `FORCE_DEMO_DATA=True` |
-| Page looks unstyled | CSS/JS load from the internet (Bootstrap, Chart.js CDN) — check your connection |
-| `That port is already in use` | Another server is running: close it, or `python manage.py runserver 8001` |
-| Admin page sends me to Home | Log in with the superuser from step 6 |
-| Some Nifty 50 cards show "Too many requests" / fail | Yahoo Finance limits free requests. Wait a minute and click **Retry**, or set `ANALYSIS_CACHE_SECONDS=3600` in `.env` so results are reused for an hour |
 
 **Quick test without PostgreSQL:** set `USE_SQLITE=True` in `.env` and run `python manage.py migrate` — Django uses a local file instead. Switch back to `False` for the real project.
 
 ---
 
-## 13. Every command in one place
+## 12. Every command in one place
 
-```bat
 python -m venv venv                  :: create virtual env (once)
 venv\Scripts\activate                :: activate (every new terminal)
 pip install -r requirements.txt      :: install packages (once)
@@ -384,16 +367,7 @@ python manage.py createsuperuser     :: make an admin user
 python manage.py runserver           :: start the website
 python manage.py makemigrations      :: ONLY after you change a models.py
 python manage.py shell               :: Python console with your project loaded
-```
 
----
-
-## 14. What to learn / build next
-
-1. Learn the basics used here: Python functions & dictionaries → Django tutorial (https://docs.djangoproject.com/en/5.2/intro/tutorial01/) → pandas basics.
-2. Add an "accuracy" page: compare rows in `PredictionLog` with the real price 5 days later.
-3. Try a machine-learning model (scikit-learn) using the indicator scores as features — and compare its hit rate honestly with the rule-based score.
-4. Real order-book / footprint data: connect a broker API (Zerodha Kite Connect or Upstox) — needs an account and API subscription.
 5. Deploy online (e.g. Render or Railway with a managed PostgreSQL). Before deploying: `DEBUG=False`, a real `SECRET_KEY`, your domain in `ALLOWED_HOSTS`, and `python manage.py collectstatic`.
 
 ---
